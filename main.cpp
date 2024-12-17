@@ -1,26 +1,11 @@
-#include "monitor.h"
-
-void providerFunction(Monitor& monitor) {
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        monitor.provide();
-    }
-}
-
-void consumerFunction(Monitor& monitor) {
-    while (true) {
-        monitor.consume();
-    }
-}
+#include "TcpServer.h"
 
 int main() {
-    Monitor monitor;
+    // Создаем объект сервера
+    TcpServer server(12345);
 
-    std::thread provider(providerFunction, std::ref(monitor));
-    std::thread consumer(consumerFunction, std::ref(monitor));
-
-    provider.join();
-    consumer.join();
+    // Запускаем сервер
+    server.start();
 
     return 0;
 }
