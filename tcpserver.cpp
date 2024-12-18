@@ -28,11 +28,7 @@ void TcpServer::start() {
             }
         }
 
-        sigset_t sigMask;
-        sigemptyset(&sigMask);
-        sigaddset(&sigMask, SIGHUP);
-
-        int activity = pselect(maxFd + 1, &readFds, nullptr, nullptr, nullptr, &sigMask);
+        int activity = pselect(maxFd + 1, &readFds, nullptr, nullptr, nullptr, &origMask);
         if (activity == -1 && errno == EINTR) {
             handleSignalEvent();
         } else if (activity > 0) {
@@ -83,7 +79,7 @@ void TcpServer::blockSignal() {
     sigset_t blockedMask;
     sigemptyset(&blockedMask);
     sigaddset(&blockedMask, SIGHUP);
-    sigprocmask(SIG_BLOCK, &blockedMask, nullptr);
+    sigprocmask(SIG_BLOCK, &blockedMask, &origMask);
 }
 
 void TcpServer::handleNewConnection() {

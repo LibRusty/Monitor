@@ -22,6 +22,7 @@ private:
     int port;
     int serverSocket;
     int clientSocket; 
+    sigset_t origMask;
     volatile sig_atomic_t wasSigHup;
 
     void createSocket();
